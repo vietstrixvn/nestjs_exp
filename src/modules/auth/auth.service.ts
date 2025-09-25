@@ -86,4 +86,12 @@ export class AuthService {
         user: await this.userService.finOne(user._id.toString())
     }
 }
+
+    async validateUser(_id: string) {
+        const user = await this.userService.finOne(_id)
+        if(!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    }
 }
