@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
 import { DatabaseModule } from './modules/database';
 import { UserModule } from './modules/user/user.module';
 
@@ -10,7 +11,10 @@ import { UserModule } from './modules/user/user.module';
     DatabaseModule,
 
     UserModule,
-    AuthModule
+    AuthModule,
+
+    CategoryModule
+
   ],
   controllers: [AppController],
   providers: [AppService],
