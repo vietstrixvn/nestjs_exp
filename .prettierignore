@@ -1,0 +1,12 @@
+# Ignore node_modules vì không cần format
+node_modules/
+
+
+# Ignore lockfiles (tùy chọn)
+package-lock.json
+yarn.lock
+
+
+# Ignore các file cấu hình & cache
+.npm/
+.dockerignore

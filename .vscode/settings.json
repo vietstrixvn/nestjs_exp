@@ -1,20 +1,18 @@
 {
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-
+  // Format khi save
   "editor.formatOnSave": true,
-
   // Chọn formatter mặc định
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-
   // Nếu có ESLint thì bật luôn auto fix
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-
   // Bật highlight khoảng trắng thừa (cho dễ thấy)
   "files.trimTrailingWhitespace": true,
   "files.trimFinalNewlines": true,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }
