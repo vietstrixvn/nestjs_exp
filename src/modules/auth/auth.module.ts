@@ -9,23 +9,23 @@ import { UserService } from "../user/user.service";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { AuthStrategy } from "./guards/guard";
+import { RolesGuard } from "./guards/role.guard";
 import { JwtStrategy } from "./statergies/jwt";
 
 
 @Module({
     imports: [
         ConfigModule,
-        MongooseModule.forFeature([ { name: UserEntity.name, schema: UserSchema}]),
+        MongooseModule.forFeature([{ name: UserEntity.name, schema: UserSchema }]),
         JwtModule.registerAsync(jwtConfig.asProvider()),
         ConfigModule.forFeature(refreshJwtConfig),
         ConfigModule.forFeature(jwtConfig),
-
-],
+    ],
     controllers: [
         AuthController
     ],
-    providers: [AuthService,UserService, JwtStrategy , AuthStrategy],
-    exports: [AuthService]
+    providers: [AuthService, UserService, JwtStrategy, AuthStrategy, RolesGuard],
+    exports: [AuthService, RolesGuard]
 })
 
-export class AuthModule {}
+export class AuthModule { }

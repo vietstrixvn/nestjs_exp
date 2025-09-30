@@ -1,13 +1,13 @@
- import { ConfigType } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from '../configs/refresh.jwt';
 
- export async function generateToken(
-    _id: string,
+export async function generateToken(
+    user: { _id: string; role: string },
     jwtService: JwtService,
     refreshRokenConfig: ConfigType<typeof refreshJwtConfig>
- ) {
-    const payload = { sub: _id };
+) {
+    const payload = { sub: user };
 
     const [accessToken, refreshToken] = await Promise.all([
         jwtService.signAsync(payload),
@@ -18,4 +18,4 @@ import refreshJwtConfig from '../configs/refresh.jwt';
         accessToken,
         refreshToken
     }
-    }
+}

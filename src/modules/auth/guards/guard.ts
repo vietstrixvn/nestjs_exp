@@ -24,6 +24,8 @@ export class AuthStrategy extends AuthGuard('jwt') {
         if (err || !user) {
             throw err || new Error('Unauthorized');
         }
+        console.log('Decoded JWT:', user);
+
         return user;
     }
 }
