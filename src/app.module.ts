@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import googleConfig from './configs/google.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -9,6 +11,11 @@ import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [googleConfig],
+      envFilePath: '.env',
+    }),
     DatabaseModule,
 
     UserModule,
@@ -21,4 +28,4 @@ import { UserModule } from './modules/user/user.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -5,7 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from 'mongoose';
 import { CreateUserDto, CreateUserGoogleDto } from "src/dots/user.dto";
 import { UserDocument, UserEntity } from "src/entities/userEntity";
-import { generateToken } from "src/middlewares/generateToken";
+import { generateTokens } from "src/middlewares/generateToken";
 import refreshJwtConfig from '../../configs/refresh.jwt';
 import { UserService } from "../user/user.service";
 
@@ -75,8 +75,8 @@ export class AuthService {
         }
 
 
-        const { accessToken, refreshToken } = await generateToken(
-            { _id: user._id, role: user.role },
+        const { accessToken, refreshToken } = await generateTokens(
+            user._id,
             this.jwtService,
             this.refeshTokenConfig
         )
@@ -126,7 +126,7 @@ export class AuthService {
     }
 
     async ValidateGoogle(google: CreateUserGoogleDto) {
-        let user = await this.userService.findOne(google.email);
+        let user = await this.userService.findOne(google.sub);
 
         if (!user) {
             user = await this.userService.findOne(google.email)
@@ -138,4 +138,16 @@ export class AuthService {
         })
     }
 
+    async OAuthLogin(_id: string): Promise<any> {
+        const { accessToken, refreshToken } = await generateTokens(
+            _id,
+            this.jwtService,
+            this.refeshTokenConfig
+        )
+        return {
+            id: _id,
+            accessToken,
+            refreshToken
+        }
+    }
 }
