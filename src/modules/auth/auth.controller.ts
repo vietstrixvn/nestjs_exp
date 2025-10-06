@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { CreateUserDto } from "src/dots/user.dto";
 import { AuthService } from "./auth.service";
 import { Roles } from "./decorator/role";
@@ -29,4 +29,7 @@ export class AuthController {
         const user = await this.authService.createManager(dto);
         return user;
     }
+
+    @Get('google/login')
+    async googleLogin() { }
 }

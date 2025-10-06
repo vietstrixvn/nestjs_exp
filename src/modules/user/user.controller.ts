@@ -10,7 +10,7 @@ export class UserController {
     constructor(
         private readonly userService: UserService,
         private readonly authService: AuthService
-    ) {}
+    ) { }
 
 
     @UseGuards(AuthStrategy)
@@ -18,7 +18,7 @@ export class UserController {
     async getProfile(
         @Req() req
     ): Promise<any> {
-        const user = await this.userService.finOne(req.user._id);
+        const user = await this.userService.findOne(req.user._id);
         return user
     }
 

@@ -3,7 +3,7 @@ import type { ConfigType } from '@nestjs/config';
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from 'mongoose';
-import { CreateUserDto } from "src/dots/user.dto";
+import { CreateUserDto, CreateUserGoogleDto } from "src/dots/user.dto";
 import { UserDocument, UserEntity } from "src/entities/userEntity";
 import { generateToken } from "src/middlewares/generateToken";
 import refreshJwtConfig from '../../configs/refresh.jwt';
@@ -84,12 +84,12 @@ export class AuthService {
         return {
             accessToken,
             refreshToken,
-            user: await this.userService.finOne(user._id.toString())
+            user: await this.userService.findOne(user._id.toString())
         }
     }
 
     async validateUser(_id: string) {
-        const user = await this.userService.finOne(_id)
+        const user = await this.userService.findOne(_id)
         if (!user) {
             throw new Error('User not found');
         }
@@ -123,6 +123,19 @@ export class AuthService {
                 updatedAt: savedUser.updatedAt
             }
         }
+    }
+
+    async ValidateGoogle(google: CreateUserGoogleDto) {
+        let user = await this.userService.findOne(google.email);
+
+        if (!user) {
+            user = await this.userService.findOne(google.email)
+        }
+
+        if (user) return user
+        return await this, this.userService.ggCreate({
+            ...google
+        })
     }
 
 }
