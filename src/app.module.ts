@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { CategoryModule } from './modules/category/category.module';
 import { DatabaseModule } from './modules/database';
+import { RedisCacheModule } from './modules/redis/redis.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -17,7 +18,8 @@ import { UserModule } from './modules/user/user.module';
       envFilePath: '.env',
     }),
     DatabaseModule,
-
+    RedisCacheModule,
+    
     UserModule,
     AuthModule,
 

@@ -3,7 +3,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from 'mongoose';
 import { CreateBlogDto, UpdateBlogDto } from "src/dots/blog.dto";
 import { BlogDocument, BlogEntity } from "src/entities/blog.entity";
+import { buildCacheKey } from "src/utils/key";
 import { CategoryService } from "../category/category.service";
+import { RedisCacheService } from "../redis/redis.service";
 
 
 
@@ -12,7 +14,8 @@ export class BlogService {
   constructor(
     @InjectModel(BlogEntity.name)
     private readonly blogModel: Model<BlogDocument>,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly redisService: RedisCacheService
   ) { }
 
   async create(dto: CreateBlogDto): Promise<any> {
@@ -39,10 +42,14 @@ export class BlogService {
       ({ title, content, categoryId });
 
     try {
+      await this.redisService.delByPattern('blog*')
+
+      Logger.log('Cleared cache entries')
       const saved = await newBlog.save();
       return saved;
     }
     catch (error) {
+      Logger.error('Error Cached')
       throw new Error('Error saving blog: ' + error.message);
     }
   }
@@ -52,6 +59,12 @@ export class BlogService {
     endDate?: string,
     categoryId?: string
   ): Promise<{ data: any[]; total: number }> {
+
+    const cachekey = buildCacheKey('blog', {
+      startDate,
+      endDate,
+      categoryId: categoryId || 'all'
+    })
 
     const filter: any = {};
     if (startDate && endDate) {
@@ -67,6 +80,12 @@ export class BlogService {
         throw new Error('Invalid category');
       }
       filter.categoryId = categoryId;
+    }
+
+    const cached = await this.redisService.get<any>(cachekey)
+    if (cached) {
+      Logger.log(`Cache Hit: ${cachekey}`)
+      return cached
     }
 
     const data = await this.blogModel
@@ -97,7 +116,17 @@ export class BlogService {
 
   async delete(id: string): Promise<void> {
     const result = await this.blogModel.findByIdAndDelete(id)
-    return Logger.debug(`Delete blog successfully! ${result} `)
+
+    try {
+      await Promise.all([
+        this.redisService.delByPattern('blog*'),
+        this.redisService.del(`blog_${id}`)
+      ])
+      return Logger.debug(`Delete blog successfully! ${result} `)
+
+    } catch (err) {
+      Logger.error('Error cached')
+    }
   }
 
 

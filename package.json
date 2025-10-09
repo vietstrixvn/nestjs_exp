@@ -30,6 +30,7 @@
     "argon2": "^0.44.0",
     "class-validator": "^0.14.2",
     "dotenv": "^17.2.3",
+    "ioredis": "^5.8.1",
     "mongoose": "^8.18.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",

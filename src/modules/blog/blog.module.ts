@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BlogEntity, BlogSchema } from "src/entities/blog.entity";
 import { AuthModule } from "../auth/auth.module";
 import { CategoryModule } from "../category/category.module";
+import { RedisCacheModule } from "../redis/redis.module";
 import { BlogController } from "./blog.controller";
 import { BlogService } from "./blog.service";
 
@@ -11,11 +12,12 @@ import { BlogService } from "./blog.service";
     imports: [
         MongooseModule.forFeature([{ name: BlogEntity.name, schema: BlogSchema }]),
         AuthModule,
-        CategoryModule
+        CategoryModule,
+        RedisCacheModule
     ],
     controllers: [BlogController],
     providers: [BlogService],
     exports: [BlogService]
 })
 
-export class BlogModule {}
+export class BlogModule { }
