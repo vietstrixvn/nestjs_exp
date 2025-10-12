@@ -15,8 +15,20 @@ export class BlogService {
     @InjectModel(BlogEntity.name)
     private readonly blogModel: Model<BlogDocument>,
     private readonly categoryService: CategoryService,
-    private readonly redisService: RedisCacheService
+    private readonly redisService: RedisCacheService,
+
   ) { }
+
+  generateFakeBlogs(count = 1000) {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i + 1,
+      title: `Blog Title ${i + 1}`,
+      author: `Author ${Math.ceil(Math.random() * 50)}`,
+      categoryId: `cat${Math.ceil(Math.random() * 10)}`,
+      content: `Lorem ipsum dolor sit amet, blog content for blog ${i + 1}.`,
+      createdAt: new Date(Date.now() - Math.floor(Math.random() * 1000000000)),
+    }));
+  }
 
   async create(dto: CreateBlogDto): Promise<any> {
     const { title, content, categoryId } = dto;
