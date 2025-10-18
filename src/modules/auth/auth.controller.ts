@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { CreateUserDto } from "src/dots/user.dto";
+import { logger } from "src/utils/logger";
 import { AuthService } from "./auth.service";
 import { Roles } from "./decorator/role";
 import { GoogleAuthGuard } from "./guards/google.guard";
@@ -8,6 +9,7 @@ import { RolesGuard } from "./guards/role.guard";
 
 @Controller('auth')
 export class AuthController {
+
 
     constructor(
         private readonly authService: AuthService
@@ -18,6 +20,9 @@ export class AuthController {
         @Body() dto: any
     ) {
         const loginResult = await this.authService.login(dto);
+        logger.info(
+            `Loggin attemp - ID ${loginResult.user?.id} | Method: credentials | Username: ${loginResult.user?.username}`
+        )
         return loginResult;
     }
 

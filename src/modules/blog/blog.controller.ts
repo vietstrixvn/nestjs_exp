@@ -35,6 +35,36 @@ export class BlogController {
         return blogs;
     }
 
+    @Get(':id')
+    async getOne(
+        @Param('id') id: string) {
+        const blog = await this.blogService.findById(id);
+        return blog;
+    }
+
+    @Delete(':id')
+    @UseGuards(AuthStrategy)
+    async deleteBlog(
+        @Param('id') id: string,
+        @Req() req
+    ) {
+        const deleteBlog = await this.blogService.delete(id)
+        return deleteBlog
+    }
+
+    @Patch(':id')
+    @UseGuards(AuthStrategy)
+    async updateBlog(
+        @Param('id') id: string,
+        @Body() dto: UpdateBlogDto,
+        @Req() req
+    ) {
+        const updatedBlog = await this.blogService.update(id, dto)
+        return updatedBlog
+    }
+
+    // Test compare lua and nomal redis
+
     @Get('lua')
     async getAllLua(
         @Query('startDate') startDate?: string,
@@ -81,8 +111,6 @@ export class BlogController {
         return { source: 'db', data, total };
     }
 
-
-
     @Get('delete-trad')
     async deleteTraditional() {
         const keys = Array.from({ length: 1000 }, (_, i) => `blog:${i + 1}`);
@@ -96,8 +124,6 @@ export class BlogController {
         const duration = Date.now() - start;
         return { method: 'traditional', deleted: keys.length, durationMs: duration };
     }
-
-
 
     @Get('delete-lua')
     async deleteLua() {
@@ -121,35 +147,7 @@ export class BlogController {
         return { method: 'lua', deleted, durationMs: duration };
     }
 
+    // End test
 
 
-
-    @Get(':id')
-    async getOne(
-        @Param('id') id: string) {
-        const blog = await this.blogService.findById(id);
-        return blog;
-    }
-
-    @Delete(':id')
-    @UseGuards(AuthStrategy)
-    async deleteBlog(
-        @Param('id') id: string,
-        @Req() req
-    ) {
-        const deleteBlog = await this.blogService.delete(id)
-        return deleteBlog
-    }
-
-
-    @Patch(':id')
-    @UseGuards(AuthStrategy)
-    async updateBlog(
-        @Param('id') id: string,
-        @Body() dto: UpdateBlogDto,
-        @Req() req
-    ) {
-        const updatedBlog = await this.blogService.update(id, dto)
-        return updatedBlog
-    }
 }
